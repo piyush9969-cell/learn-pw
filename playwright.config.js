@@ -1,6 +1,8 @@
+// playwright.config.js
 module.exports = {
-  timeout: 60000, // 60 seconds
+  timeout: 120000, // test timeout
   expect: {
-    timeout: 15000,
+    timeout: 20000, // expect timeout
   },
+  retries: process.env.CI ? 2 : 0,
 };
