@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    env:
+      CI: true
+      PLAYWRIGHT_HEADLESS: "true"
 
     steps:
       - uses: actions/checkout@v4
