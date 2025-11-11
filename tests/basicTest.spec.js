@@ -141,3 +141,80 @@ test("DemoQA File Checkbox", async({page}) => {
   
 
 })
+
+
+//DAY 6
+
+test("Mouse actions", async ({ page }) => {
+  //we can select usign both getbyrole and locator
+  await page.goto("https://demoqa.com/buttons");
+  const doubleClickbtn = page.getByRole("button", { name: /Double Click Me/i });
+  const rightClickbtn = page.getByRole("button", { name: /Right Click Me/i });
+
+  const clickbtn = page.locator("text=Click Me").nth(2);
+
+  await doubleClickbtn.dblclick();
+  await expect(page.locator("#doubleClickMessage")).toBeVisible();
+
+  await rightClickbtn.click({ button: "right" });
+  await expect(page.locator("#rightClickMessage")).toBeVisible();
+
+  await clickbtn.click();
+  await expect(page.locator("#dynamicClickMessage")).toBeVisible();
+});
+
+test("Hover actions", async ({ page }) => {
+  await page.goto("https://demoqa.com/tool-tips");
+  await page.getByRole("button", { name: "Hover me to see" }).hover();
+  await expect(page.locator(".tooltip-inner")).toBeVisible();
+});
+
+test("Keyboard actions", async ({ page }) => {
+  await page.goto("https://demoqa.com/automation-practice-form");
+  const firstName = page.locator("#firstName");
+  await firstName.click();
+  await page.keyboard.type("Robo");
+  await page.keyboard.press("Tab");
+  await page.keyboard.type("Man");
+
+  await page.keyboard.press("Enter");
+});
+
+test("Drop-down actions", async ({ page }) => {
+  await page.goto("https://demoqa.com/select-menu");
+
+  //by INDEX
+  const selectOne = page.locator("#selectOne");
+  await selectOne.click();
+  const options = page.locator("div[id^='react-select-3-option']");
+  await options.nth(1).click();
+
+  //selectOption only works with <select> html tag
+  // await selectOne.selectOption({ index: 2 });
+
+  //toBe works with exact match
+  //therefore we use toContainText, since we get a long text
+  await expect(selectOne).toContainText(/Mr/i);
+
+  //BY VALUE
+  const cars = page.locator("#cars");
+  await cars.selectOption([{ value: "volvo" }, { value: "saab" }]);
+
+  //select.selectedOptions gives all the selected options
+
+  //<select id="cars" multiple>
+  //     <option value="volvo">Volvo</option>
+  //     <option value="saab">Saab</option>
+  //     <option value="opel">Opel</option>
+  // </select>
+  const selectedCards = await cars.evaluate((select) =>
+    Array.from(select.selectedOptions).map((option) => option.value)
+  );
+
+  expect(selectedCards).toEqual(["volvo", "saab"]);
+
+  //BY VISIBLE TEXT
+  const oldSelectMenu = page.locator("#oldSelectMenu");
+  await oldSelectMenu.selectOption({ label: "Purple" });
+  await expect(oldSelectMenu).toContainText(/Purple/i);
+});
