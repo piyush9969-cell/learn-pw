@@ -166,6 +166,9 @@ test("Mouse actions", async ({ page }) => {
 test("Hover actions", async ({ page }) => {
   await page.goto("https://demoqa.com/tool-tips");
   await page.getByRole("button", { name: "Hover me to see" }).hover();
+
+  //// Wait for tooltip to be attached to the DOM (needed for github actions)
+  await page.waitForSelector(".tooltip-inner", { timeout: 20000 });
   await expect(page.locator(".tooltip-inner")).toBeVisible();
 });
 
